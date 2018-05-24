@@ -7,9 +7,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -27,12 +29,14 @@ public class GalleryFragment extends BaseFragment implements GalleryMvpView, Gal
 
 
     private static final int GALLERY_SPAN_COUNT = 3;
-    private static final int VIEW_CACHE_SIZE = 10;
+    private static final int VIEW_CACHE_SIZE = 1;
 
     @Inject
     GalleryMvpPresenter<GalleryMvpView> mPresenter;
 
     private InfinitePlaceHolderView mGalleryView;
+
+    private SearchView mSearchView;
 
     public static GalleryFragment newInstance() {
         GalleryFragment fragment = new GalleryFragment();
@@ -45,7 +49,7 @@ public class GalleryFragment extends BaseFragment implements GalleryMvpView, Gal
         View view = inflater.inflate(R.layout.fragment_photos_gallery, container, false);
         setHasOptionsMenu(true);
         ActivityComponent component = getActivityComponent();
-        if (component != null) {
+        if ( component != null ) {
             component.inject(this);
         }
         return view;
@@ -56,8 +60,9 @@ public class GalleryFragment extends BaseFragment implements GalleryMvpView, Gal
         mGalleryView = view.findViewById(R.id.galleryView);
         mGalleryView.setLoadMoreResolver(new LoadMoreView(this));
         mGalleryView.getBuilder()
-                .setLayoutManager(new GridLayoutManager(getContext(), GALLERY_SPAN_COUNT))
-                .setItemViewCacheSize(VIEW_CACHE_SIZE);
+                .setHasFixedSize(true)
+                .setItemViewCacheSize(VIEW_CACHE_SIZE)
+                .setLayoutManager(new GridLayoutManager(getContext(), GALLERY_SPAN_COUNT));
         mPresenter.onAttach(this);
     }
 
@@ -67,9 +72,43 @@ public class GalleryFragment extends BaseFragment implements GalleryMvpView, Gal
         inflater.inflate(R.menu.gallery_menu, menu);
 
         // Associate searchable configuration with the SearchView
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        mSearchView = (SearchView)menu.findItem(R.id.search).getActionView();
+
+        String lastSearchText = mPresenter.getLastSearchText();
+        if ( !TextUtils.isEmpty(lastSearchText) ) {
+            mSearchView.setIconified(false);
+            mSearchView.setQuery(lastSearchText, false);
+            mSearchView.clearFocus();
+        }
+
+        SearchManager searchManager = (SearchManager)getActivity().getSystemService(Context.SEARCH_SERVICE);
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+
+        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                onSearchQuery(null);
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch ( item.getItemId() ) {
+            case R.id.menu_item_clear:
+                clearSearch();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void clearSearch() {
+        mSearchView.setQuery(null, false);
+        mSearchView.clearFocus();
+        mSearchView.setIconified(true);
+        onSearchQuery(null);
     }
 
     @Override
@@ -101,6 +140,7 @@ public class GalleryFragment extends BaseFragment implements GalleryMvpView, Gal
     @Override
     public void clearPhotos() {
         mGalleryView.removeAllViews();
+        mGalleryView.setLoadMoreResolver(new LoadMoreView(this));
     }
 
     @Override
@@ -109,11 +149,13 @@ public class GalleryFragment extends BaseFragment implements GalleryMvpView, Gal
     }
 
     public void onSearchQuery(String query) {
+        mSearchView.clearFocus();
         mPresenter.onSearchQuery(query);
     }
 
     @Override
     public void onLoadMore() {
-        mPresenter.loadMorePhotos("");
+        String text = mSearchView != null && mSearchView.getQuery() != null ? mSearchView.getQuery().toString() : null;
+        mPresenter.loadMorePhotos(text);
     }
 }

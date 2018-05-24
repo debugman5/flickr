@@ -20,7 +20,7 @@ import io.reactivex.functions.Function;
 
 public class GalleryPresenter<V extends GalleryMvpView> extends BasePresenter<V> implements GalleryMvpPresenter<V> {
 
-    private static final int RESULTS_PER_PAGE = 15;
+    private static final int RESULTS_PER_PAGE = 30;
     private int mNumberOfPages;
     private List<Photo> mPhotos;
     private int mCurrentPage;
@@ -45,6 +45,7 @@ public class GalleryPresenter<V extends GalleryMvpView> extends BasePresenter<V>
 
     @Override
     public void loadMorePhotos(String searchText) {
+        AppLogger.i("loadMorePhotos - searchText: " + searchText);
         mCurrentPage++;
         if ( mCurrentPage > 1 && mCurrentPage > mNumberOfPages ) {
             return;

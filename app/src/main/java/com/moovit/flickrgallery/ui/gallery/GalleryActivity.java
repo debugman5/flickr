@@ -18,7 +18,8 @@ public class GalleryActivity extends BaseActivity {
         getSupportActionBar().setLogo(R.mipmap.ic_launcher);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        if ( savedInstanceState == null ) {
+        GalleryFragment fragment = (GalleryFragment)getSupportFragmentManager().findFragmentByTag(GalleryFragment.class.getName());
+        if ( fragment == null ) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.gallery_container, GalleryFragment.newInstance(), GalleryFragment.class.getName())
@@ -37,11 +38,15 @@ public class GalleryActivity extends BaseActivity {
 
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
-            GalleryFragment fragment = (GalleryFragment)getSupportFragmentManager()
-                    .findFragmentByTag(GalleryFragment.class.getName());
+            GalleryFragment fragment = (GalleryFragment)getSupportFragmentManager().findFragmentByTag(GalleryFragment.class.getName());
             if ( fragment != null ) {
                 fragment.onSearchQuery(query);
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }
