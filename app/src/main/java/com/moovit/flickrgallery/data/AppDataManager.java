@@ -39,7 +39,17 @@ public class AppDataManager implements DataManager {
     }
 
     @Override
-    public Single<GetPhotosResponse> getRecentPhotos(String searchText) {
-        return mApiHelper.getRecentPhotos(searchText);
+    public Single<GetPhotosResponse> getRecentPhotos(int perPage, String searchText) {
+        return mApiHelper.getRecentPhotos(perPage, searchText);
+    }
+
+    @Override
+    public void saveLastSearchText(String text) {
+        mPreferencesHelper.saveLastSearchText(text);
+    }
+
+    @Override
+    public String getLastSearchText() {
+        return mPreferencesHelper.getLastSearchText();
     }
 }

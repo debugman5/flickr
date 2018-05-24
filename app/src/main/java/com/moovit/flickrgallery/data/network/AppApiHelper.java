@@ -4,6 +4,10 @@ package com.moovit.flickrgallery.data.network;
 
 import android.text.TextUtils;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.gsonparserfactory.GsonParserFactory;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.moovit.flickrgallery.data.network.model.GetPhotosResponse;
 import com.moovit.flickrgallery.di.ApiInfo;
 import com.rx2androidnetworking.Rx2ANRequest;
@@ -17,6 +21,8 @@ import io.reactivex.Single;
 @Singleton
 public class AppApiHelper implements ApiHelper {
 
+    private static final String API_KEY_PATH_KEY = "api_key";
+    private static final String PER_PAGE_QUERY_KEY = "per_page";
     private static final String SEARCH_QUERY_KEY = "text";
 
     private final String mApiKey;
@@ -24,12 +30,17 @@ public class AppApiHelper implements ApiHelper {
     @Inject
     public AppApiHelper(@ApiInfo String apiKey) {
         mApiKey = apiKey;
+        Gson gson = new GsonBuilder().setLenient().create();
+        AndroidNetworking.setParserFactory(new GsonParserFactory(gson));
     }
 
     @Override
-    public Single<GetPhotosResponse> getRecentPhotos(String searchText) {
+    public Single<GetPhotosResponse> getRecentPhotos(int perPage, String searchText) {
         Rx2ANRequest.GetRequestBuilder builder = Rx2AndroidNetworking.get(ApiEndPoint.GET_RECENT_PHOTOS_URL)
-            .addPathParameter(ApiEndPoint.API_KEY_PATH_KEY, mApiKey);
+            .addQueryParameter(API_KEY_PATH_KEY, mApiKey);
+        if ( perPage > 0 ) {
+            builder.addQueryParameter(PER_PAGE_QUERY_KEY, String.valueOf(perPage));
+        }
         if ( !TextUtils.isEmpty(searchText) ) {
             builder.addQueryParameter(SEARCH_QUERY_KEY, searchText);
         }

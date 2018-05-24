@@ -11,28 +11,53 @@ public class GetPhotosResponse {
     @SerializedName("photos")
     private MetaData mMetaData;
 
+    public MetaData getMetaData() {
+        return mMetaData;
+    }
 
+    public void setMetaData(MetaData metaData) {
+        mMetaData = metaData;
+    }
+
+    @Override
+    public String toString() {
+        return "GetPhotosResponse{" +
+                "mMetaData=" + mMetaData +
+                '}';
+    }
 
     public static class MetaData {
 
         @Expose
-        @SerializedName("page")
-        private int mPage;
-
-        @Expose
         @SerializedName("pages")
-        private int mPages;
+        private int mNumberOfPages;
 
         @Expose
         @SerializedName("photo")
         private List<Photo> mPhotos;
 
-        public int getPage() {
-            return mPage;
+        public int getNumberOfPages() {
+            return mNumberOfPages;
         }
 
-        public void setPage(int page) {
-            mPage = page;
+        public void setNumberOfPages(int numberOfPages) {
+            mNumberOfPages = numberOfPages;
+        }
+
+        public List<Photo> getPhotos() {
+            return mPhotos;
+        }
+
+        public void setPhotos(List<Photo> photos) {
+            mPhotos = photos;
+        }
+
+        @Override
+        public String toString() {
+            return "MetaData{" +
+                    "mNumberOfPages=" + mNumberOfPages +
+                    ", mPhotos=" + mPhotos +
+                    '}';
         }
     }
 }

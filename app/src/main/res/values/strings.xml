@@ -1,7 +1,13 @@
 <resources>
     <!--App Message-->
+    <string name="app_name">Flickr Gallery</string>
     <string name="api_retry_error">Please retry!</string>
     <string name="api_default_error">Something wrong happened!</string>
     <string name="some_error">Some Error Occurred!</string>
     <string name="connection_error">Internet connection lost!</string>
+    <string name="search_title">Search</string>
+    <string name="search_hint">Search Flickr</string>
+    <string name="clear_search">Clear Search</string>
+    <string name="start_polling">Start polling</string>
+    <string name="stop_polling">Stop polling</string>
 </resources>

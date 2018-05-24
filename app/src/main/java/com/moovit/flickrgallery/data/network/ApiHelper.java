@@ -9,5 +9,5 @@ import io.reactivex.Single;
 
 public interface ApiHelper {
 
-    Single<GetPhotosResponse> getRecentPhotos(String searchText);
+    Single<GetPhotosResponse> getRecentPhotos(int perPage, String searchText);
 }

@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface GalleryMvpView extends MvpView {
 
-    void showPhotos(List<GalleryPhotoViewModel> photos);
+    void addPhotos(List<GalleryPhotoViewModel> photos, boolean noMoreToLoad);
 
     void showPhotoPage();
+
+    void clearPhotos();
 }

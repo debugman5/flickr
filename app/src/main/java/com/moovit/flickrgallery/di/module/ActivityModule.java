@@ -6,6 +6,9 @@ import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 
 import com.moovit.flickrgallery.di.ActivityContext;
+import com.moovit.flickrgallery.ui.gallery.GalleryMvpPresenter;
+import com.moovit.flickrgallery.ui.gallery.GalleryMvpView;
+import com.moovit.flickrgallery.ui.gallery.GalleryPresenter;
 import com.moovit.flickrgallery.utils.rx.AppSchedulerProvider;
 import com.moovit.flickrgallery.utils.rx.SchedulerProvider;
 
@@ -45,4 +48,8 @@ public class ActivityModule {
         return new AppSchedulerProvider();
     }
 
+    @Provides
+    GalleryMvpPresenter<GalleryMvpView> provideGalleryPhotosMvpPresenter(GalleryPresenter<GalleryMvpView> presenter) {
+        return presenter;
+    }
 }

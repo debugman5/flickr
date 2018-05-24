@@ -7,29 +7,29 @@ public class Photo {
 
     @Expose
     @SerializedName("id")
-    private long mId;
+    private String mId;
 
     @Expose
     @SerializedName("owner")
-    private long mOwner;
+    private String mOwner;
 
     @Expose
     @SerializedName("url_s")
     private String mUrl;
 
-    public long getId() {
+    public String getId() {
         return mId;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         mId = id;
     }
 
-    public long getOwner() {
+    public String getOwner() {
         return mOwner;
     }
 
-    public void setOwner(long owner) {
+    public void setOwner(String owner) {
         mOwner = owner;
     }
 
@@ -39,5 +39,14 @@ public class Photo {
 
     public void setUrl(String url) {
         mUrl = url;
+    }
+
+    @Override
+    public String toString() {
+        return "Photo{" +
+                "mId=" + mId +
+                ", mOwner=" + mOwner +
+                ", mUrl='" + mUrl + '\'' +
+                '}';
     }
 }

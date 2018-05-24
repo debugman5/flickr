@@ -29,7 +29,7 @@ import com.moovit.flickrgallery.utils.NetworkUtils;
 public abstract class BaseActivity extends AppCompatActivity
         implements MvpView, BaseFragment.Callback {
 
-    private ProgressDialog mProgressDialog;
+    protected ProgressDialog mProgressDialog;
 
     private ActivityComponent mActivityComponent;
 
@@ -139,5 +139,4 @@ public abstract class BaseActivity extends AppCompatActivity
     public void openActivityOnTokenExpire() {
     }
 
-    protected abstract void setUp();
 }

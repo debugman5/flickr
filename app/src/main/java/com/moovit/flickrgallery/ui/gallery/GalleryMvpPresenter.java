@@ -4,5 +4,11 @@ import com.moovit.flickrgallery.ui.base.MvpPresenter;
 
 public interface GalleryMvpPresenter<V extends GalleryMvpView> extends MvpPresenter<V> {
 
-    void loadMorePhotos();
+    String getLastSearchText();
+
+    void loadMorePhotos(String searchText);
+
+    void onGalleryPhotoClick(int position);
+
+    void onSearchQuery(String query);
 }

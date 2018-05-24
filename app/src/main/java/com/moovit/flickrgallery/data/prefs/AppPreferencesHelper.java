@@ -16,11 +16,22 @@ import javax.inject.Singleton;
 @Singleton
 public class AppPreferencesHelper implements PreferencesHelper {
 
+    private static final String LAST_SEARCH_TEXT_KEY = "LAST_SEARCH_TEXT_KEY";
     private final SharedPreferences mPrefs;
 
     @Inject
     public AppPreferencesHelper(@ApplicationContext Context context,
                                 @PreferenceInfo String prefFileName) {
         mPrefs = context.getSharedPreferences(prefFileName, Context.MODE_PRIVATE);
+    }
+
+    @Override
+    public void saveLastSearchText(String text) {
+        mPrefs.edit().putString(LAST_SEARCH_TEXT_KEY, text).apply();
+    }
+
+    @Override
+    public String getLastSearchText() {
+        return mPrefs.getString(LAST_SEARCH_TEXT_KEY, "");
     }
 }
