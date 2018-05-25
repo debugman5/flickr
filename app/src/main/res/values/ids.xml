@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="adapter_progress_view_type" type="id"/>
+    <item name="notification_channel_id" type="id"/>
+    <item name="polling_job_tag" type="id"/>
 </resources>

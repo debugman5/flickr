@@ -20,6 +20,8 @@ import com.moovit.flickrgallery.R;
 import com.moovit.flickrgallery.di.component.ActivityComponent;
 import com.moovit.flickrgallery.ui.base.BaseFragment;
 import com.moovit.flickrgallery.ui.base.LoadMoreView;
+import com.moovit.flickrgallery.ui.page.PhotoPageActivity;
+import com.moovit.flickrgallery.utils.AppLogger;
 
 import java.util.List;
 
@@ -29,7 +31,7 @@ public class GalleryFragment extends BaseFragment implements GalleryMvpView, Gal
 
 
     private static final int GALLERY_SPAN_COUNT = 3;
-    private static final int VIEW_CACHE_SIZE = 1;
+    private static final int VIEW_CACHE_SIZE = 15;
 
     @Inject
     GalleryMvpPresenter<GalleryMvpView> mPresenter;
@@ -37,6 +39,7 @@ public class GalleryFragment extends BaseFragment implements GalleryMvpView, Gal
     private InfinitePlaceHolderView mGalleryView;
 
     private SearchView mSearchView;
+    private MenuItem mPollingToggleView;
 
     public static GalleryFragment newInstance() {
         GalleryFragment fragment = new GalleryFragment();
@@ -63,7 +66,6 @@ public class GalleryFragment extends BaseFragment implements GalleryMvpView, Gal
                 .setHasFixedSize(true)
                 .setItemViewCacheSize(VIEW_CACHE_SIZE)
                 .setLayoutManager(new GridLayoutManager(getContext(), GALLERY_SPAN_COUNT));
-        mPresenter.onAttach(this);
     }
 
     @Override
@@ -73,7 +75,7 @@ public class GalleryFragment extends BaseFragment implements GalleryMvpView, Gal
 
         // Associate searchable configuration with the SearchView
         mSearchView = (SearchView)menu.findItem(R.id.search).getActionView();
-
+        mPollingToggleView = menu.findItem(R.id.menu_item_toggle_polling);
         String lastSearchText = mPresenter.getLastSearchText();
         if ( !TextUtils.isEmpty(lastSearchText) ) {
             mSearchView.setIconified(false);
@@ -87,17 +89,25 @@ public class GalleryFragment extends BaseFragment implements GalleryMvpView, Gal
         mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
+                mPollingToggleView.setVisible(false);
                 onSearchQuery(null);
                 return false;
             }
         });
+
+
+        mPresenter.onAttach(this);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch ( item.getItemId() ) {
             case R.id.menu_item_clear:
-                clearSearch();
+                if ( !TextUtils.isEmpty(mSearchView.getQuery()) )
+                    clearSearch();
+                return true;
+            case R.id.menu_item_toggle_polling:
+                mPresenter.onPollingToggleClick();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -108,6 +118,7 @@ public class GalleryFragment extends BaseFragment implements GalleryMvpView, Gal
         mSearchView.setQuery(null, false);
         mSearchView.clearFocus();
         mSearchView.setIconified(true);
+        mPollingToggleView.setVisible(false);
         onSearchQuery(null);
     }
 
@@ -124,8 +135,9 @@ public class GalleryFragment extends BaseFragment implements GalleryMvpView, Gal
 
     @Override
     public void addPhotos(List<GalleryPhotoViewModel> photos, boolean noMoreToLoad) {
+        AppLogger.d("addPhotos photos size: " + photos.size() + " noMoreToLoad: " + noMoreToLoad);
         for ( GalleryPhotoViewModel photo : photos ) {
-            mGalleryView.addView(new GalleryPhotoItem(photo.getImageUrl(), this));
+            mGalleryView.addView(new GalleryPhotoItem(photo.getId(), photo.getImageUrl(), this));
         }
         if ( noMoreToLoad ) {
             mGalleryView.noMoreToLoad();
@@ -133,8 +145,8 @@ public class GalleryFragment extends BaseFragment implements GalleryMvpView, Gal
     }
 
     @Override
-    public void showPhotoPage() {
-
+    public void showPhotoPage(String url) {
+        startActivity(PhotoPageActivity.getStartingIntent(getContext(), url));
     }
 
     @Override
@@ -144,8 +156,13 @@ public class GalleryFragment extends BaseFragment implements GalleryMvpView, Gal
     }
 
     @Override
-    public void onGalleryPhotoClick(int position) {
-        mPresenter.onGalleryPhotoClick(position);
+    public void setPollingToggle(boolean toggleIsOn) {
+        mPollingToggleView.setTitle(toggleIsOn ? R.string.stop_polling : R.string.start_polling);
+    }
+
+    @Override
+    public void onGalleryPhotoClick(String id) {
+        mPresenter.onGalleryPhotoClick(id);
     }
 
     public void onSearchQuery(String query) {

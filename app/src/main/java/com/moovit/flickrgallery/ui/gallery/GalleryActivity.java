@@ -25,18 +25,11 @@ public class GalleryActivity extends BaseActivity {
                     .add(R.id.gallery_container, GalleryFragment.newInstance(), GalleryFragment.class.getName())
                     .commit();
         }
-
-        handleIntent(getIntent());
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
-        handleIntent(intent);
-    }
-
-    private void handleIntent(Intent intent) {
-
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+        if ( Intent.ACTION_SEARCH.equals(intent.getAction()) ) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             GalleryFragment fragment = (GalleryFragment)getSupportFragmentManager().findFragmentByTag(GalleryFragment.class.getName());
             if ( fragment != null ) {

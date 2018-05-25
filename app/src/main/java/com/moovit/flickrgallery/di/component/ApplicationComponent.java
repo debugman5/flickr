@@ -2,13 +2,13 @@
 
 package com.moovit.flickrgallery.di.component;
 
-import android.app.Application;
 import android.content.Context;
 
 import com.moovit.flickrgallery.FlickrGalleryApp;
 import com.moovit.flickrgallery.data.DataManager;
 import com.moovit.flickrgallery.di.ApplicationContext;
 import com.moovit.flickrgallery.di.module.ApplicationModule;
+import com.moovit.flickrgallery.service.PollingScheduler;
 
 import javax.inject.Singleton;
 
@@ -23,7 +23,7 @@ public interface ApplicationComponent {
     @ApplicationContext
     Context context();
 
-    Application application();
-
     DataManager getDataManager();
+
+    PollingScheduler getPollingScheduler();
 }

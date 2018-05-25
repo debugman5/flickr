@@ -17,6 +17,9 @@ import javax.inject.Singleton;
 public class AppPreferencesHelper implements PreferencesHelper {
 
     private static final String LAST_SEARCH_TEXT_KEY = "LAST_SEARCH_TEXT_KEY";
+    private static final String LAST_SEARCH_RESULT_ID = "LAST_SEARCH_RESULT_ID";
+    private static final String POLLING_ENABLED_KEY = "POLLING_ENABLED_KEY";
+
     private final SharedPreferences mPrefs;
 
     @Inject
@@ -33,5 +36,25 @@ public class AppPreferencesHelper implements PreferencesHelper {
     @Override
     public String getLastSearchText() {
         return mPrefs.getString(LAST_SEARCH_TEXT_KEY, "");
+    }
+
+    @Override
+    public void saveLastSearchResultId(String id) {
+        mPrefs.edit().putString(LAST_SEARCH_RESULT_ID, id).apply();
+    }
+
+    @Override
+    public String getLastSearchResultId() {
+        return mPrefs.getString(LAST_SEARCH_RESULT_ID, null);
+    }
+
+    @Override
+    public boolean isPollingEnabled() {
+        return mPrefs.getBoolean(POLLING_ENABLED_KEY, false);
+    }
+
+    @Override
+    public void setPollingEnabled(boolean enabled) {
+        mPrefs.edit().putBoolean(POLLING_ENABLED_KEY, enabled).apply();
     }
 }

@@ -5,6 +5,8 @@ package com.moovit.flickrgallery.di.module;
 import android.app.Application;
 import android.content.Context;
 
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.moovit.flickrgallery.BuildConfig;
 import com.moovit.flickrgallery.data.AppDataManager;
 import com.moovit.flickrgallery.data.DataManager;
@@ -17,6 +19,8 @@ import com.moovit.flickrgallery.data.prefs.PreferencesHelper;
 import com.moovit.flickrgallery.di.ApiInfo;
 import com.moovit.flickrgallery.di.ApplicationContext;
 import com.moovit.flickrgallery.di.PreferenceInfo;
+import com.moovit.flickrgallery.service.AppPollingScheduler;
+import com.moovit.flickrgallery.service.PollingScheduler;
 import com.moovit.flickrgallery.utils.AppConstants;
 
 import javax.inject.Singleton;
@@ -78,5 +82,16 @@ public class ApplicationModule {
     @Singleton
     DbHelper provideDbHelper(AppDbHelper appDbHelper) {
         return appDbHelper;
+    }
+
+    @Provides
+    @Singleton
+    PollingScheduler providePollingScheduler(AppPollingScheduler appPollingScheduler) {
+        return appPollingScheduler;
+    }
+
+    @Provides
+    FirebaseJobDispatcher provideJobDispatcher(@ApplicationContext Context context) {
+        return new FirebaseJobDispatcher(new GooglePlayDriver(context));
     }
 }

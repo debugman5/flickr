@@ -20,8 +20,6 @@ import io.reactivex.Single;
 @Singleton
 public class AppDataManager implements DataManager {
 
-    private static final String TAG = "AppDataManager";
-
     private final Context mContext;
     private final DbHelper mDbHelper;
     private final PreferencesHelper mPreferencesHelper;
@@ -39,8 +37,13 @@ public class AppDataManager implements DataManager {
     }
 
     @Override
-    public Single<GetPhotosResponse> getRecentPhotos(int perPage, String searchText) {
-        return mApiHelper.getRecentPhotos(perPage, searchText);
+    public Single<GetPhotosResponse> getRecentPhotos(int perPage, int pageNumber) {
+        return mApiHelper.getRecentPhotos(perPage, pageNumber);
+    }
+
+    @Override
+    public Single<GetPhotosResponse> searchPhotos(int perPage, int pageNumber, String searchText) {
+        return mApiHelper.searchPhotos(perPage, pageNumber, searchText);
     }
 
     @Override
@@ -51,5 +54,25 @@ public class AppDataManager implements DataManager {
     @Override
     public String getLastSearchText() {
         return mPreferencesHelper.getLastSearchText();
+    }
+
+    @Override
+    public void saveLastSearchResultId(String id) {
+        mPreferencesHelper.saveLastSearchResultId(id);
+    }
+
+    @Override
+    public String getLastSearchResultId() {
+        return mPreferencesHelper.getLastSearchResultId();
+    }
+
+    @Override
+    public boolean isPollingEnabled() {
+        return mPreferencesHelper.isPollingEnabled();
+    }
+
+    @Override
+    public void setPollingEnabled(boolean enabled) {
+        mPreferencesHelper.setPollingEnabled(enabled);
     }
 }

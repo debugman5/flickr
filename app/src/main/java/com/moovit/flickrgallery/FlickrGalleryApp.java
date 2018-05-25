@@ -14,9 +14,6 @@ import javax.inject.Inject;
 
 public class FlickrGalleryApp extends Application {
 
-    @Inject
-    DataManager mDataManager;
-
     private ApplicationComponent mApplicationComponent;
 
     @Override
@@ -25,8 +22,6 @@ public class FlickrGalleryApp extends Application {
 
         mApplicationComponent = DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this)).build();
-
-        mApplicationComponent.inject(this);
 
         AppLogger.init();
 
